@@ -48,7 +48,7 @@ public class ExtendKey {
         int length = tempWord.length;
         byte[] rotatedWord = new byte[length];
         for (int i = 0; i < length; i++) {
-            rotatedWord[(length-numberOfTimes+i)%length] = tempWord[i];  //a[(a.length-q+i)%a.length] = a[i]
+            rotatedWord[(length-numberOfTimes+i)%length] = tempWord[i];
         }
         return rotatedWord;
     }

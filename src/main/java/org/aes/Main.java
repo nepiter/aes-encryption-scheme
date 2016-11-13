@@ -4,9 +4,10 @@ import org.aes.cipher.Cipher;
 
 public class Main {
     public static void main(String[] args) {
-        String plainText = "this is for test";
+        String plainText = "00112233445566778899aabbccddeeff";
         System.out.println("Original content: " + plainText);
 
         Cipher cipher = new Cipher(plainText);
+        cipher.encrypt();
     }
 }
