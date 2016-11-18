@@ -12,6 +12,6 @@ public class Main {
         Cipher cipher = new Cipher(plainText);
         cipher.encrypt();
         cipher.decrypt();
-        System.out.println("Decrypted content: " + Arrays.toString(cipher.getOutputContentBytes()));
+        System.out.println("Decrypted content: " + new String(cipher.getOutputContentBytes()));
     }
 }

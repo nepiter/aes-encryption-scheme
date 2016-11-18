@@ -13,5 +13,6 @@ dependencies {
 
     testCompile 'junit:junit:+'
     testCompile 'com.google.guava:guava:+'
+    testCompile 'org.hamcrest:hamcrest-all:+'
 
 }

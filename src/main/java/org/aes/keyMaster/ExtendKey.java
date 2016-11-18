@@ -62,8 +62,10 @@ public class ExtendKey {
     }
 
     private static byte[] XOROfWords(byte[] tempWord, byte[] roundConstantWord) {
-        BigInteger firstWord = new BigInteger(tempWord);
-        BigInteger secondWord = new BigInteger(roundConstantWord);
-        return firstWord.xor(secondWord).toByteArray();
+        byte[] temp = new byte[tempWord.length];
+        for (int i = 0; i < tempWord.length; i++) {
+            temp[i] = (byte) (tempWord[i] ^ roundConstantWord[i]);
+        }
+        return temp;
     }
 }
