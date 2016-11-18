@@ -20,17 +20,18 @@ public class ExtendKey {
                     {UnsignedBytes.parseUnsignedByte("36", 16), UnsignedBytes.parseUnsignedByte("00", 16), UnsignedBytes.parseUnsignedByte("00", 16), UnsignedBytes.parseUnsignedByte("00", 16)}
             };
 
-    public static byte[][] keyExpandedWords = new byte[44][4];
+    public static byte[][] keyExpandedWords;    //= new byte[44][4];
 
-    public static void keyExpansion(byte[] key, int wordsInKey) {
-        for (int i = 0; i < wordsInKey; i++) {
-            for (int j = 0; j < wordsInKey; j++) {
+    public static void keyExpansion(byte[] key, int wordsInKey, int numberOfRounds) {
+        keyExpandedWords = new byte[4*(numberOfRounds + 1)][4];
+        for (int i = 0; i < numberOfRounds - 6; i++) {
+            for (int j = 0; j < 4; j++) {
                 keyExpandedWords[i][j] = key[4*i + j];
             }
         }
 
         int i = wordsInKey;
-        while (i < 44) {
+        while (i < keyExpandedWords.length) {
             byte[] tempWord = keyExpandedWords[i - 1];
             if (i % wordsInKey == 0) {
                 tempWord = leftRotateWord(tempWord, 1);

@@ -6,18 +6,20 @@ import org.aes.keyMaster.KeyGenerator;
 
 public class Cipher {
     private static final byte[] key;
+    private static int keyLengthInBytes;
+    private static int numberOfRounds; //Nr
 
     private String content;
     private int wordsInkey; //Nk
-    private int numberOfRounds; //Nr
-    private int numberOfColummnsInState;  //Nb
     private byte[] contentBytes;
     private byte[][] contentBlock;
     private byte[][] encryptedContentBlock;
     private byte[] outputContentBytes;
 
-    public Cipher(String content) {
+    public Cipher(String content, int keyLengthInBytes) {
         this.content = content;
+        Cipher.keyLengthInBytes = keyLengthInBytes;
+        numberOfRounds = setNumberOfRounds(keyLengthInBytes);
         contentBytes = new byte[content.length()];
         contentBlock = new byte[content.length()/16][16];
         encryptedContentBlock = new byte[content.length()/16][16];
@@ -25,10 +27,22 @@ public class Cipher {
         initializeContentBlocks();
     }
 
+    private int setNumberOfRounds(int keyLengthInBytes) {
+        switch (keyLengthInBytes) {
+            case 16:
+                return 10;
+            case 24:
+                return 12;
+            case 32:
+                return 14;
+        }
+        return 0;
+    }
+
     static {
-        KeyGenerator keyGenerator = new KeyGenerator(16);
+        KeyGenerator keyGenerator = new KeyGenerator(keyLengthInBytes);
         key = keyGenerator.getInstance();
-        ExtendKey.keyExpansion(key, (key.length)/4);
+        ExtendKey.keyExpansion(key, (key.length)/4, numberOfRounds);
     }
 
     private void initializeContentBlocks() {
@@ -68,10 +82,6 @@ public class Cipher {
 
     public int getNumberOfRounds() {
         return numberOfRounds;
-    }
-
-    public int getNumberOfColummnsInState() {
-        return numberOfColummnsInState;
     }
 
     public byte[] getContentBytes() {
