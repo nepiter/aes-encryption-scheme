@@ -1,6 +1,7 @@
 package org.aes.cipher;
 
 import com.google.common.primitives.UnsignedBytes;
+import org.aes.keyMaster.KeyGenerator;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -46,7 +47,9 @@ public class CipherTest {
     @Test
     public void validateContentBlock() {
         String plainText = "00112233445566778899aabbccddeeff";
-        Cipher cipher = new Cipher(plainText, 16);
+        KeyGenerator keyGenerator = new KeyGenerator(16);
+        byte[] key = keyGenerator.getInstance();
+        Cipher cipher = new Cipher(plainText, key);
 
         byte[][] contenBlock = cipher.getContentBlock();
 
@@ -64,7 +67,9 @@ public class CipherTest {
     @Test
     public void validateEncryptedContent() {
         String plainText = "00112233445566778899aabbccddeeff";
-        Cipher cipher = new Cipher(plainText, 16);
+        KeyGenerator keyGenerator = new KeyGenerator(24);
+        byte[] key = keyGenerator.getInstance();
+        Cipher cipher = new Cipher(plainText, key);
         cipher.encrypt();
         byte[][] encrypted = cipher.getEncryptedContentBlock();
 
@@ -74,7 +79,9 @@ public class CipherTest {
     @Test
     public void validateEntireAlgo() {
         String plainText = "00112233445566778899aabbccddeeff0123456789abcdef";
-        Cipher cipher = new Cipher(plainText, 16);
+        KeyGenerator keyGenerator = new KeyGenerator(32);
+        byte[] key = keyGenerator.getInstance();
+        Cipher cipher = new Cipher(plainText, key);
         cipher.encrypt();
         cipher.decrypt();
         byte[] output = cipher.getOutputContentBytes();

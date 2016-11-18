@@ -5,25 +5,23 @@ import org.aes.keyMaster.ExtendKey;
 import org.aes.keyMaster.KeyGenerator;
 
 public class Cipher {
-    private static final byte[] key;
-    private static int keyLengthInBytes;
-    private static int numberOfRounds; //Nr
-
+    private byte[] key;
     private String content;
-    private int wordsInkey; //Nk
+    private int numberOfRounds; //Nr
     private byte[] contentBytes;
     private byte[][] contentBlock;
     private byte[][] encryptedContentBlock;
     private byte[] outputContentBytes;
 
-    public Cipher(String content, int keyLengthInBytes) {
+    public Cipher(String content, byte[] key) {
         this.content = content;
-        Cipher.keyLengthInBytes = keyLengthInBytes;
-        numberOfRounds = setNumberOfRounds(keyLengthInBytes);
+        this.key = key;
+        numberOfRounds = setNumberOfRounds(key.length);
         contentBytes = new byte[content.length()];
         contentBlock = new byte[content.length()/16][16];
         encryptedContentBlock = new byte[content.length()/16][16];
         outputContentBytes = new byte[content.length()];
+        ExtendKey.keyExpansion(key, (key.length)/4);
         initializeContentBlocks();
     }
 
@@ -39,12 +37,6 @@ public class Cipher {
         return 0;
     }
 
-    static {
-        KeyGenerator keyGenerator = new KeyGenerator(keyLengthInBytes);
-        key = keyGenerator.getInstance();
-        ExtendKey.keyExpansion(key, (key.length)/4, numberOfRounds);
-    }
-
     private void initializeContentBlocks() {
         for (int i = 0; i < content.length(); i++) {
             contentBytes[i] = UnsignedBytes.parseUnsignedByte(content.substring(i, i+1), 16);
@@ -56,7 +48,7 @@ public class Cipher {
         }
     }
 
-    public static byte[] getKey() {
+    public byte[] getKey() {
         return key;
     }
 
@@ -74,10 +66,6 @@ public class Cipher {
 
     public byte[] getOutputContentBytes() {
         return outputContentBytes;
-    }
-
-    public int getWordsInkey() {
-        return wordsInkey;
     }
 
     public int getNumberOfRounds() {

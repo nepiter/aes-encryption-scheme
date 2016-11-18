@@ -36,7 +36,7 @@ public class ExtendKeyTest {
 
     @Test
     public void foo() {
-        ExtendKey.keyExpansion(key, key.length/4, 12);
+        ExtendKey.keyExpansion(key, key.length/4);
 
         for (int i = 0; i < 52; i++) {
             for (int j = 0; j < 4; j++) {

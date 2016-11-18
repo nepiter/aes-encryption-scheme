@@ -16,6 +16,10 @@ public class KeyGenerator {
         this.keyLengthInBytes = keyLengthInBytes;
     }
 
+    public int getKeyLengthInBytes() {
+        return keyLengthInBytes;
+    }
+
     public byte[] getInstance() {
         String keyString = RandomStringUtils.random(keyLengthInBytes*2, "0123456789abcdef");
         key = convertToByteForm(keyString);

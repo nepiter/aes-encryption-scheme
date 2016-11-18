@@ -22,9 +22,9 @@ public class ExtendKey {
 
     public static byte[][] keyExpandedWords;    //= new byte[44][4];
 
-    public static void keyExpansion(byte[] key, int wordsInKey, int numberOfRounds) {
-        keyExpandedWords = new byte[4*(numberOfRounds + 1)][4];
-        for (int i = 0; i < numberOfRounds - 6; i++) {
+    public static void keyExpansion(byte[] key, int wordsInKey) {
+        keyExpandedWords = new byte[4*(wordsInKey + 7)][4];
+        for (int i = 0; i < wordsInKey; i++) {
             for (int j = 0; j < 4; j++) {
                 keyExpandedWords[i][j] = key[4*i + j];
             }
