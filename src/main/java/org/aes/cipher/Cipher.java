@@ -82,7 +82,7 @@ public class Cipher {
             int round = 0;
             state = addRoundKey(state, round);
 
-            for (round = 1; round <= 9; round++) {
+            for (round = 1; round < numberOfRounds; round++) {
                 state = subBytes(state);
                 state = shiftRows(state);
                 state = mixColumns(state);
@@ -199,10 +199,10 @@ public class Cipher {
         int currentBlock = 0;
         for (int i = 0; i < encryptedContentBlock.length; i++) {
             byte[][] state = createStateForDecryption(encryptedContentBlock[i]);
-            int round = 10;
+            int round = numberOfRounds;
             state = addRoundKey(state, round);
 
-            for (round = 9; round > 0; round--) {
+            for (round = numberOfRounds - 1; round > 0; round--) {
                 state = invShiftRows(state);
                 state = invSubBytes(state);
                 state = addRoundKey(state, round);
