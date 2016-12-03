@@ -49,7 +49,7 @@ public class CipherTest {
         String plainText = "00112233445566778899aabbccddeeff";
         KeyGenerator keyGenerator = new KeyGenerator(16);
         byte[] key = keyGenerator.getInstance();
-        Cipher cipher = new Cipher(plainText, key);
+        Cipher cipher = new Cipher(plainText.getBytes(), key);
 
         byte[][] contenBlock = cipher.getContentBlock();
 
@@ -69,7 +69,7 @@ public class CipherTest {
         String plainText = "00112233445566778899aabbccddeeff";
         KeyGenerator keyGenerator = new KeyGenerator(24);
         byte[] key = keyGenerator.getInstance();
-        Cipher cipher = new Cipher(plainText, key);
+        Cipher cipher = new Cipher(plainText.getBytes(), key);
         cipher.encrypt();
         byte[][] encrypted = cipher.getEncryptedContentBlock();
 
@@ -81,15 +81,11 @@ public class CipherTest {
         String plainText = "00112233445566778899aabbccddeeff0123456789abcdef";
         KeyGenerator keyGenerator = new KeyGenerator(32);
         byte[] key = keyGenerator.getInstance();
-        Cipher cipher = new Cipher(plainText, key);
+        Cipher cipher = new Cipher(plainText.getBytes(), key);
         cipher.encrypt();
         cipher.decrypt();
         byte[] output = cipher.getOutputContentBytes();
-        StringBuilder sb = new StringBuilder();
-        for (byte b : output) {
-            sb.append(UnsignedBytes.toString(b, 16));
-        }
 
-        assertThat(sb.toString(), equalTo(plainText));
+        assertThat(new String(output), equalTo(plainText));
     }
 }

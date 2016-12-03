@@ -7,14 +7,16 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        String plainText = "00112233445566778899aabbccddeeff";
+        byte[] plainText = "This is a text".getBytes();
         KeyGenerator keyGenerator = new KeyGenerator(16);
         byte[] key = keyGenerator.getInstance();
-        System.out.println("Original content: " + plainText);
+        System.out.println("Original content: " + new String(plainText));
 
         Cipher cipher = new Cipher(plainText, key);
         cipher.encrypt();
         cipher.decrypt();
-        System.out.println("Decrypted content: " + new String(cipher.getOutputContentBytes()));
+        System.out.println("Decrypted content: " + new String(cipher.getOutputContentBytesWithoutPadding()));
+        System.out.println("Original conent length: " + plainText.length);
+        System.out.println("Decrypted conent length: " + cipher.getOutputContentBytesWithoutPadding().length);
     }
 }

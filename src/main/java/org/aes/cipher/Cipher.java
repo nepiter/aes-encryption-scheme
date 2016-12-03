@@ -4,25 +4,39 @@ import com.google.common.primitives.UnsignedBytes;
 import org.aes.keyMaster.ExtendKey;
 import org.aes.keyMaster.KeyGenerator;
 
+import java.util.Arrays;
+
 public class Cipher {
     private byte[] key;
-    private String content;
     private int numberOfRounds; //Nr
     private byte[] contentBytes;
     private byte[][] contentBlock;
+    private byte[] encryptedContent;
     private byte[][] encryptedContentBlock;
     private byte[] outputContentBytes;
+    private byte[] outputContentBytesWithoutPadding;
+    private int originalContentLen;
 
-    public Cipher(String content, byte[] key) {
-        this.content = content;
+    public Cipher(byte[] content, byte[] key) {
         this.key = key;
+        originalContentLen = content.length;
+        contentBytes = padContent(content);
         numberOfRounds = setNumberOfRounds(key.length);
-        contentBytes = new byte[content.length()];
-        contentBlock = new byte[content.length()/16][16];
-        encryptedContentBlock = new byte[content.length()/16][16];
-        outputContentBytes = new byte[content.length()];
+        contentBlock = new byte[contentBytes.length/16][16];
+        encryptedContent = new byte[contentBytes.length];
+        encryptedContentBlock = new byte[contentBytes.length/16][16];
+        outputContentBytes = new byte[contentBytes.length];
+        outputContentBytesWithoutPadding = new byte[originalContentLen];
         ExtendKey.keyExpansion(key, (key.length)/4);
         initializeContentBlocks();
+    }
+
+    private byte[] padContent(byte[] content) {
+        int totalBytesToPad = 16 - (content.length % 16);
+        if (content.length % 16 != 0) {
+            return Arrays.copyOf(content, content.length + totalBytesToPad);
+        }
+        return content;
     }
 
     private int setNumberOfRounds(int keyLengthInBytes) {
@@ -38,9 +52,6 @@ public class Cipher {
     }
 
     private void initializeContentBlocks() {
-        for (int i = 0; i < content.length(); i++) {
-            contentBytes[i] = UnsignedBytes.parseUnsignedByte(content.substring(i, i+1), 16);
-        }
         int index = 0;
         for (int i = 0; i < contentBytes.length/16; i++) {
             System.arraycopy(contentBytes, index, contentBlock[i], 0, 16);
@@ -50,10 +61,6 @@ public class Cipher {
 
     public byte[] getKey() {
         return key;
-    }
-
-    public String getContent() {
-        return content;
     }
 
     public byte[][] getContentBlock() {
@@ -66,6 +73,10 @@ public class Cipher {
 
     public byte[] getOutputContentBytes() {
         return outputContentBytes;
+    }
+
+    public byte[] getOutputContentBytesWithoutPadding() {
+        return outputContentBytesWithoutPadding;
     }
 
     public int getNumberOfRounds() {
@@ -92,6 +103,7 @@ public class Cipher {
             state = shiftRows(state);
             state = addRoundKey(state, round);
             convertToEncryptedContentFrom(state, i);
+            createEncryptedContentBlock();
         }
     }
 
@@ -190,15 +202,22 @@ public class Cipher {
     private void convertToEncryptedContentFrom(byte[][] state, int row) {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                encryptedContentBlock[row][4*i + j] = state[i][j];
+                encryptedContent[(i + 4*j) + row*16] = state[i][j];
             }
         }
     }
 
+    private void createEncryptedContentBlock() {
+        int index = 0;
+        for (int i = 0; i < encryptedContent.length/16; i++) {
+            System.arraycopy(encryptedContent, index, encryptedContentBlock[i], 0, 16);
+            index += 16;
+        }
+    }
+
     public void decrypt() {
-        int currentBlock = 0;
         for (int i = 0; i < encryptedContentBlock.length; i++) {
-            byte[][] state = createStateForDecryption(encryptedContentBlock[i]);
+            byte[][] state = createState(encryptedContentBlock[i]); //byte[][] state = createState(contentBlock[i]);
             int round = numberOfRounds;
             state = addRoundKey(state, round);
 
@@ -211,19 +230,8 @@ public class Cipher {
             state = invShiftRows(state);
             state = invSubBytes(state);
             state = addRoundKey(state, round);
-            addToContent(state, currentBlock);
-            ++currentBlock;
+            addToContent(state, i);
         }
-    }
-
-    private byte[][] createStateForDecryption(byte[] outputBlock) {
-        byte[][] s = new byte[4][4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                s[i][j] = outputBlock[j + 4*i];
-            }
-        }
-        return s;
     }
 
     private byte[][] invShiftRows(byte[][] state) {
@@ -300,12 +308,13 @@ public class Cipher {
         return byteMultiplicationWith2(temp);
     }
 
-    private void addToContent(byte[][] state, int currentBlock) {
+    private void addToContent(byte[][] state, int row) {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                outputContentBytes[currentBlock*j] = state[j][i];
+                outputContentBytes[(i + 4*j) + row*16] = state[i][j];
             }
         }
+        System.arraycopy(outputContentBytes, 0, outputContentBytesWithoutPadding, 0, originalContentLen);
     }
 
     private void printState(byte[][] state) {
@@ -314,8 +323,8 @@ public class Cipher {
             for (int j = 0; j < state[i].length; j++) {
                 System.out.print(" " + UnsignedBytes.toString(state[j][i], 16));
             }
-            System.out.println();
         }
+        System.out.println();
         System.out.println("------------------------------");
     }
 }
