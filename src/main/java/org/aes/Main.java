@@ -4,10 +4,13 @@ import org.aes.cipher.Cipher;
 import org.aes.keyMaster.KeyGenerator;
 
 import java.util.Arrays;
+/*
+    CBC, CFB, OFB, CTR
+ */
 
 public class Main {
     public static void main(String[] args) {
-        byte[] plainText = "This is a text".getBytes();
+        byte[] plainText = "This is a plaintext".getBytes();
         KeyGenerator keyGenerator = new KeyGenerator(16);
         byte[] key = keyGenerator.getInstance();
         System.out.println("Original content: " + new String(plainText));
