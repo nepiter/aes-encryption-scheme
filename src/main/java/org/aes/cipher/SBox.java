@@ -2,6 +2,9 @@ package org.aes.cipher;
 
 import com.google.common.primitives.UnsignedBytes;
 
+/*
+- This class contains SBOX and Inverse SBOX used in key generation and encryption/decryption
+ */
 public class SBox {
     public static final byte[][] SBOX = {
             {

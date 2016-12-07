@@ -1,42 +1,53 @@
 package org.aes.cipher;
 
-import com.google.common.primitives.UnsignedBytes;
 import org.aes.keyMaster.ExtendKey;
-import org.aes.keyMaster.KeyGenerator;
-
+import com.google.common.primitives.UnsignedBytes;
+import org.apache.commons.lang3.RandomStringUtils;
 import java.util.Arrays;
 
+/*
+- This is Cipher class which provides encryption and decryption functionalities
+- It will first do the PKCS#7 padding for the content passed
+- The encryption and decryption functions will run based on the mode.
+ */
 public class Cipher {
     private byte[] key;
-    private int numberOfRounds; //Nr
+    private int numberOfRounds;
     private byte[] contentBytes;
     private byte[][] contentBlock;
     private byte[] encryptedContent;
     private byte[][] encryptedContentBlock;
     private byte[] outputContentBytes;
-    private byte[] outputContentBytesWithoutPadding;
-    private int originalContentLen;
+    private byte[][] outputContentBlock;
+    private byte[] initializationVector = new byte[16];
+
+    public enum Mode {
+        EC13, CBC
+    }
 
     public Cipher(byte[] content, byte[] key) {
         this.key = key;
-        originalContentLen = content.length;
         contentBytes = padContent(content);
         numberOfRounds = setNumberOfRounds(key.length);
         contentBlock = new byte[contentBytes.length/16][16];
         encryptedContent = new byte[contentBytes.length];
         encryptedContentBlock = new byte[contentBytes.length/16][16];
         outputContentBytes = new byte[contentBytes.length];
-        outputContentBytesWithoutPadding = new byte[originalContentLen];
+        outputContentBlock = new byte[contentBytes.length/16][16];
         ExtendKey.keyExpansion(key, (key.length)/4);
         initializeContentBlocks();
     }
 
+    //PKCS#7 padding
     private byte[] padContent(byte[] content) {
-        int totalBytesToPad = 16 - (content.length % 16);
-        if (content.length % 16 != 0) {
-            return Arrays.copyOf(content, content.length + totalBytesToPad);
+        int contentLength = content.length;
+        int totalBytesToPad = 16 - (contentLength % 16);
+        byte[] contentWithPadding = Arrays.copyOf(content, contentLength + totalBytesToPad);
+        for (int i = 0; i < totalBytesToPad; i++) {
+            contentWithPadding[contentWithPadding.length - 1 - i] = UnsignedBytes.parseUnsignedByte(String.valueOf(totalBytesToPad),
+                    16);
         }
-        return content;
+        return contentWithPadding;
     }
 
     private int setNumberOfRounds(int keyLengthInBytes) {
@@ -59,12 +70,12 @@ public class Cipher {
         }
     }
 
-    public byte[] getKey() {
-        return key;
-    }
-
     public byte[][] getContentBlock() {
         return contentBlock;
+    }
+
+    public byte[] getEncryptedContent() {
+        return encryptedContent;
     }
 
     public byte[][] getEncryptedContentBlock() {
@@ -75,36 +86,45 @@ public class Cipher {
         return outputContentBytes;
     }
 
-    public byte[] getOutputContentBytesWithoutPadding() {
-        return outputContentBytesWithoutPadding;
+    public void encrypt(Mode encryptionMode) {
+        switch (encryptionMode) {
+            case EC13:
+                for (int i = 0; i < contentBlock.length; i++) {
+                    encryptionOfABlock(i, contentBlock[i]);
+                }
+                break;
+
+            case CBC:
+                initializationVector = generateInitializationVector();
+                for (int i = 0; i < contentBlock.length; i++) {
+                    if (i == 0) {
+                        contentBlock[i] = XOROfByteArrays(Arrays.copyOfRange(contentBytes, 16*i, 16* (i+1)), initializationVector);
+                    } else {
+                        contentBlock[i] = XOROfByteArrays(Arrays.copyOfRange(contentBytes, 16*i, 16* (i+1)),
+                                Arrays.copyOfRange(encryptedContent, 16* (i-1), 16*i));
+                    }
+                    encryptionOfABlock(i, contentBlock[i]);
+                }
+                break;
+        }
     }
 
-    public int getNumberOfRounds() {
-        return numberOfRounds;
-    }
+    private void encryptionOfABlock(int blockIndex, byte[] block) {
+        byte[][] state = createState(block);
+        int round = 0;
+        state = addRoundKey(state, round);
 
-    public byte[] getContentBytes() {
-        return contentBytes;
-    }
-
-    public void encrypt() {
-        for (int i = 0; i < contentBlock.length; i++) {
-            byte[][] state = createState(contentBlock[i]);
-            int round = 0;
-            state = addRoundKey(state, round);
-
-            for (round = 1; round < numberOfRounds; round++) {
-                state = subBytes(state);
-                state = shiftRows(state);
-                state = mixColumns(state);
-                state = addRoundKey(state, round);
-            }
+        for (round = 1; round < numberOfRounds; round++) {
             state = subBytes(state);
             state = shiftRows(state);
+            state = mixColumns(state);
             state = addRoundKey(state, round);
-            convertToEncryptedContentFrom(state, i);
-            createEncryptedContentBlock();
         }
+        state = subBytes(state);
+        state = shiftRows(state);
+        state = addRoundKey(state, round);
+        convertToEncryptedContentFrom(state, blockIndex);
+        createEncryptedContentBlock();
     }
 
     private byte[][] createState(byte[] inputBlock) {
@@ -123,7 +143,7 @@ public class Cipher {
             for (int j = 0; j < 4; j++) {
                 tempWord[i][j] = state[j][i];
             }
-            tempWord[i] = XOROfWords(tempWord[i], ExtendKey.keyExpandedWords[round * 4 + i]);
+            tempWord[i] = XOROfByteArrays(tempWord[i], ExtendKey.keyExpandedWords[round * 4 + i]);
         }
         for (int i = 0; i < 4; i++) {
             for (int j= 0; j < 4; j++) {
@@ -133,7 +153,7 @@ public class Cipher {
         return state;
     }
 
-    private static byte[] XOROfWords(byte[] tempWord, byte[] roundConstantWord) {
+    private static byte[] XOROfByteArrays(byte[] tempWord, byte[] roundConstantWord) {
         byte[] temp = new byte[tempWord.length];
         for (int i = 0; i < tempWord.length; i++) {
             temp[i] = (byte) (tempWord[i] ^ roundConstantWord[i]);
@@ -161,7 +181,7 @@ public class Cipher {
         int length = tempWord.length;
         byte[] rotatedWord = new byte[length];
         for (int i = 0; i < length; i++) {
-            rotatedWord[(length-numberOfTimes+i)%length] = tempWord[i];//(i+numberOfTimes)%length)
+            rotatedWord[(length-numberOfTimes+i)%length] = tempWord[i];
         }
         return rotatedWord;
     }
@@ -215,23 +235,47 @@ public class Cipher {
         }
     }
 
-    public void decrypt() {
-        for (int i = 0; i < encryptedContentBlock.length; i++) {
-            byte[][] state = createState(encryptedContentBlock[i]); //byte[][] state = createState(contentBlock[i]);
-            int round = numberOfRounds;
-            state = addRoundKey(state, round);
+    public void decrypt(Mode encryptionMode) {
+        switch (encryptionMode) {
+            case EC13:
+                for (int i = 0; i < encryptedContentBlock.length; i++) {
+                    decryptionOfABlock(i, encryptedContentBlock[i]);
+                }
+                removePadding();
+                break;
 
-            for (round = numberOfRounds - 1; round > 0; round--) {
-                state = invShiftRows(state);
-                state = invSubBytes(state);
-                state = addRoundKey(state, round);
-                state = invMixColumns(state);
-            }
+            case CBC:
+                for (int i = 0; i < encryptedContentBlock.length; i++) {
+                    decryptionOfABlock(i, encryptedContentBlock[i]);
+                    if (i == 0) {
+                        outputContentBlock[i] = XOROfByteArrays(Arrays.copyOfRange(outputContentBytes, 16*i, 16 * (i+1)),
+                                initializationVector);
+                    } else {
+                        outputContentBlock[i] = XOROfByteArrays(Arrays.copyOfRange(outputContentBytes, 16*i, 16* (i+1)),
+                                encryptedContentBlock[i-1]);
+                    }
+                }
+                convertBlockToContent();
+                removePadding();
+                break;
+        }
+    }
+
+    private void decryptionOfABlock(int blockIndex, byte[] block) {
+        byte[][] state = createState(block);
+        int round = numberOfRounds;
+        state = addRoundKey(state, round);
+
+        for (round = numberOfRounds - 1; round > 0; round--) {
             state = invShiftRows(state);
             state = invSubBytes(state);
             state = addRoundKey(state, round);
-            addToContent(state, i);
+            state = invMixColumns(state);
         }
+        state = invShiftRows(state);
+        state = invSubBytes(state);
+        state = addRoundKey(state, round);
+        addToContent(state, blockIndex);
     }
 
     private byte[][] invShiftRows(byte[][] state) {
@@ -253,7 +297,7 @@ public class Cipher {
     private byte[][] invSubBytes(byte[][] state) {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                state[i][j] = SBox.INV_SBOX[(state[i][j] >> 4) & 0x0f][state[i][j] & 0x0f]; //SBox.SBOX[(state[i][j] >> 4) & 0x0f][state[i][j] & 0x0f]
+                state[i][j] = SBox.INV_SBOX[(state[i][j] >> 4) & 0x0f][state[i][j] & 0x0f];
             }
         }
         return state;
@@ -314,7 +358,33 @@ public class Cipher {
                 outputContentBytes[(i + 4*j) + row*16] = state[i][j];
             }
         }
-        System.arraycopy(outputContentBytes, 0, outputContentBytesWithoutPadding, 0, originalContentLen);
+    }
+
+    private void convertBlockToContent() {
+        for (int i = 0; i < outputContentBlock.length; i++) {
+            System.arraycopy(outputContentBlock[i], 0, outputContentBytes, 16*i, 16);
+        }
+    }
+
+    private void removePadding() {
+        int outPutContentLen = outputContentBytes.length;
+        int bytesToRemove = Integer.parseInt(UnsignedBytes.toString(outputContentBytes[outPutContentLen-1], 16));
+        outputContentBytes = Arrays.copyOfRange(outputContentBytes, 0, outPutContentLen - bytesToRemove);
+        System.out.println(outputContentBytes.length);
+    }
+
+    private byte[] generateInitializationVector() {
+        String ivStr = RandomStringUtils.random(32, "0123456789abcdef");
+        byte[] iv = convertToByteForm(ivStr);
+        return iv;
+    }
+
+    private byte[] convertToByteForm(String keyString) {
+        byte[] key = new byte[keyString.length()/2];
+        for (int i = 0; i < keyString.length()/2; i++) {
+            key[i] = UnsignedBytes.parseUnsignedByte(keyString.substring(i, i + 2), 16);
+        }
+        return key;
     }
 
     private void printState(byte[][] state) {

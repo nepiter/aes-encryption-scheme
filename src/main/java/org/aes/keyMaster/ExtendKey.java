@@ -5,6 +5,10 @@ import org.aes.cipher.SBox;
 
 import java.math.BigInteger;
 
+/*
+- Implementation of key expansion algorithm
+- Expanded words for key are stored so that it can be accessed during encryption and decryption
+ */
 public class ExtendKey {
     private final static byte[][] roundConstant =
             {
@@ -20,7 +24,7 @@ public class ExtendKey {
                     {UnsignedBytes.parseUnsignedByte("36", 16), UnsignedBytes.parseUnsignedByte("00", 16), UnsignedBytes.parseUnsignedByte("00", 16), UnsignedBytes.parseUnsignedByte("00", 16)}
             };
 
-    public static byte[][] keyExpandedWords;    //= new byte[44][4];
+    public static byte[][] keyExpandedWords;
 
     public static void keyExpansion(byte[] key, int wordsInKey) {
         keyExpandedWords = new byte[4*(wordsInKey + 7)][4];
