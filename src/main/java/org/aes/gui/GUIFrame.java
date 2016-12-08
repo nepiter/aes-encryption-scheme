@@ -19,26 +19,26 @@ public class GUIFrame extends JFrame {
         setBounds(100, 100, 600, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);    
+     
         // PlainText Panel
-      
         JPanel plainPanel = new JPanel();
         plainPanel.setBounds(0, 0, 584, 339);
         getContentPane().add(plainPanel);
         plainPanel.setLayout(null);                 
+        
         //PlainPane -> data setting -> final!
-
         final JTextPane PlainPane = new JTextPane();
         PlainPane.setBounds(12, 29, 560, 133);
         plainPanel.add(PlainPane);
-        // PlainText Label
         
+        // PlainText Label
         JLabel PlaintextLabel = new JLabel("PlainText");
         PlaintextLabel.setBounds(12, 10, 57, 15);
         plainPanel.add(PlaintextLabel);         
-        // CipherText Panel
         
+        // CipherText Panel
         JPanel cipherPanel = new JPanel();
-        cipherPanel.setBounds(0, 337, 584, 224);
+        cipherPanel.setBounds(0, 337, 584, 232);
         getContentPane().add(cipherPanel);
         cipherPanel.setLayout(null);    
         
@@ -54,7 +54,7 @@ public class GUIFrame extends JFrame {
         
         //Decipher Panel
         JPanel decipherPanel = new JPanel();
-        decipherPanel.setBounds(0, 559, 584, 303);
+        decipherPanel.setBounds(0, 570, 584, 171);
         getContentPane().add(decipherPanel);
         decipherPanel.setLayout(null);                  
         
@@ -84,10 +84,9 @@ public class GUIFrame extends JFrame {
                 }
             }
         });
-        DecryptedButton.setBounds(231, 175, 130, 50);
+        DecryptedButton.setBounds(231, 180, 130, 50);
         cipherPanel.add(DecryptedButton);
         setVisible(true);                                   
-        
         // Encryption Button
         JButton EncryptedButton = new JButton("Encryption");
         EncryptedButton.addActionListener(new ActionListener() {
@@ -173,10 +172,5 @@ public class GUIFrame extends JFrame {
         plainPanel.add(PaddingType);
         PaddingType.setModel(new DefaultComboBoxModel(new String[] {"  EC13", "  CBC"}));
         PaddingType.setSelectedIndex(0);
-    }
-    
-    public static void main(String args[])
-    {
-        new MyFrame1();
     }
 }
