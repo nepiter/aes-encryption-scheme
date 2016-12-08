@@ -18,50 +18,64 @@ public class GUIFrame extends JFrame {
         super("Encrypt_Testing");
         setBounds(100, 100, 600, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        getContentPane().setLayout(null);
-
+        getContentPane().setLayout(null);    
+        // PlainText Panel
+      
         JPanel plainPanel = new JPanel();
-        plainPanel.setBounds(0, 0, 584, 287);
+        plainPanel.setBounds(0, 0, 584, 339);
         getContentPane().add(plainPanel);
-        plainPanel.setLayout(null);
+        plainPanel.setLayout(null);                 
+        //PlainPane -> data setting -> final!
 
         final JTextPane PlainPane = new JTextPane();
-        PlainPane.setBounds(12, 29, 560, 118);
+        PlainPane.setBounds(12, 29, 560, 133);
         plainPanel.add(PlainPane);
+        // PlainText Label
+        
         JLabel PlaintextLabel = new JLabel("PlainText");
         PlaintextLabel.setBounds(12, 10, 57, 15);
-        plainPanel.add(PlaintextLabel);
-
+        plainPanel.add(PlaintextLabel);         
+        // CipherText Panel
+        
         JPanel cipherPanel = new JPanel();
-        cipherPanel.setBounds(0, 284, 584, 287);
+        cipherPanel.setBounds(0, 337, 584, 224);
         getContentPane().add(cipherPanel);
-        cipherPanel.setLayout(null);
+        cipherPanel.setLayout(null);    
+        
+        // CipherText Label
         JLabel CipherLabel = new JLabel("CipherText");
         CipherLabel.setBounds(12, 10, 70, 15);
-        cipherPanel.add(CipherLabel);
-
+        cipherPanel.add(CipherLabel);           
+        
+        //CipherPane -> data setting -> final!
         final JTextPane CipherPane = new JTextPane();
-        CipherPane.setBounds(12, 27, 560, 224);
-        cipherPanel.add(CipherPane);
+        CipherPane.setBounds(12, 36, 560, 133);
+        cipherPanel.add(CipherPane);            
+        
+        //Decipher Panel
         JPanel decipherPanel = new JPanel();
-        decipherPanel.setBounds(0, 570, 584, 292);
+        decipherPanel.setBounds(0, 559, 584, 303);
         getContentPane().add(decipherPanel);
-        decipherPanel.setLayout(null);
-
+        decipherPanel.setLayout(null);                  
+        
+        //Decipher Label
         JLabel DecipherLabel = new JLabel("DecipherText");
-        DecipherLabel.setBounds(12, 10, 81, 24);
-        decipherPanel.add(DecipherLabel);
+        DecipherLabel.setBounds(10, 1, 81, 24);
+        decipherPanel.add(DecipherLabel);                   
+        
+        //Decipher TextPane
         final JTextPane DecipherPane = new JTextPane();
-        DecipherPane.setBounds(12, 36, 560, 234);
-        decipherPanel.add(DecipherPane);
+        DecipherPane.setBounds(12, 24, 560, 133);
+        decipherPanel.add(DecipherPane);   
 
+        //Decryption Button
         JButton DecryptedButton = new JButton("Decryption");
         DecryptedButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 String cipher,result_de;
                 try{
                     cipher = CipherPane.getText();
-                    // result_de = FileEncryption.decryptString(cipher);
+                   // result_de = FileEncryption.decryptString(cipher);
                     result_de = "yashwanth telekula";
                     DecipherPane.setText(result_de);
                 }catch (Exception e)
@@ -70,102 +84,99 @@ public class GUIFrame extends JFrame {
                 }
             }
         });
-        DecryptedButton.setBounds(229, 253, 124, 23);
+        DecryptedButton.setBounds(231, 175, 130, 50);
         cipherPanel.add(DecryptedButton);
-        setVisible(true);
-
+        setVisible(true);                                   
+        
+        // Encryption Button
         JButton EncryptedButton = new JButton("Encryption");
         EncryptedButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0)
-            {
-                //PlainArea -> GetText! -> Plain
-                //call encryptString(plain)
-                //result <- FileEncryption.encryptString(plain)
-                //CipherPane.setText(result)-> Show!
-                String result_en;
-                try {
-                    if(plain != "") {
-                        plain = PlainPane.getText();
-                    } else {
-                        plain = PlainPane.getText();
-                    }
-                    ////////////////////////////////////////////////////////////////////////////////////////////////////
-                    result_en = "It's working";  //This line should be commented and
-                    //in next line required function should
-                    //be used which returns result_en.
-
-                    temp = (String) EncryptionBitcount.getSelectedItem();
-                    temp1 = (String) EncryptionType.getSelectedItem();
-                    temp2 = (String) PaddingType.getSelectedItem();
-
-                    temp =  temp.replaceAll(" ", "").substring(0, 3);
-                    temp1 = temp1.replaceAll(" ", "");
-                    temp2 = temp2.replaceAll(" ", "");
-                    System.out.println(temp);
-                    System.out.println(temp1);
-                    System.out.println(temp2);
-//                CipherPane.setText(result_en);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        EncryptedButton.setBounds(221, 235, 147, 41);
-        plainPanel.add(EncryptedButton);
-
-        JButton BrowseButton = new JButton("Browse a File");
-        BrowseButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0)
-            {
-                String result_en;
-                try {
-                    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    //plain = PlainPane.getFile();
-                    System.out.println("Instead we get string from file.txt");
-                    // result_en = FileEncryption.encryptString(plain, );
-                    result_en = "This sentence be replaced by file return";
-                    CipherPane.setText(result_en);
-
-                } catch (Exception e) {
+        public void actionPerformed(ActionEvent arg0) 
+        {
+        	String result_en;
+            try {
+            	            	if(plain != "")
+                {plain = PlainPane.getText();}
+            	
+            	else {plain = PlainPane.getText();}
+            	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                result_en = "It's working"; 
+                temp = (String) EncryptionBitcount.getSelectedItem();
+                temp1 = (String) EncryptionType.getSelectedItem();
+                temp2 = (String) PaddingType.getSelectedItem();
+       
+                temp =  temp.replaceAll(" ", "");
+                temp = temp.substring(0,3);
+                temp1 = temp1.replaceAll(" ", "");
+                temp2 = temp2.replaceAll(" ", "");
+                System.out.println(temp);
+                System.out.println(temp1);
+                System.out.println(temp2);
+               } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                }
+              }   
             }
         });
-
-        BrowseButton.setBounds(236, 158, 112, 23);
+        EncryptedButton.setBounds(230, 278, 130, 50);
+        plainPanel.add(EncryptedButton);            
+        
+        JButton BrowseButton = new JButton("Browse a File");
+        
+        BrowseButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) 
+            {
+                String result_en;
+                try {
+                	System.out.println("Instead we get string from file.txt"); 
+                	result_en = "This sentence be replaced by file return";
+                	CipherPane.setText(result_en);
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }   
+                }
+            });
+            
+        BrowseButton.setBounds(230, 173, 130, 50);
         plainPanel.add(BrowseButton);
-
+        
         String[] bitCount = { "128-Bit", "192-Bit", "256-Bit" };
         EncryptionBitcount = new JComboBox(bitCount);
+        
         EncryptionBitcount.setToolTipText("");
-        EncryptionBitcount.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        EncryptionBitcount.setBounds(72, 203, 94, 20);
+        EncryptionBitcount.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        EncryptionBitcount.setBounds(39, 234, 94, 20);
         plainPanel.add(EncryptionBitcount);
         EncryptionBitcount.setModel(new DefaultComboBoxModel(new String[] {"  128-Bit", "  192-Bit", "  256-Bit"}));
         EncryptionBitcount.setSelectedIndex(2);
-
+       
         String[] EncryptType = { "AES", "RSA"};
         EncryptionType = new JComboBox(EncryptType);
+        
         EncryptionType.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-
-
-            }
+        	public void actionPerformed(ActionEvent e) {	
+        	}
         });
-
+        
         EncryptionType.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        EncryptionType.setBounds(219, 203, 94, 20);
+        EncryptionType.setBounds(246, 234, 94, 20);
         plainPanel.add(EncryptionType);
         EncryptionType.setModel(new DefaultComboBoxModel(new String[] {"    AES", "    RSA"}));
         EncryptionType.setSelectedIndex(1);
-
+        
         String[] TypeOfPadding = { "Type0","Type1","Type2","Type3","Type4","Type5" };
         PaddingType = new JComboBox(TypeOfPadding);
+        
         PaddingType.setFont(new Font("Tahoma", Font.PLAIN, 13));
-        PaddingType.setBounds(365, 204, 112, 20);
+        PaddingType.setBounds(429, 234, 112, 20);
         plainPanel.add(PaddingType);
         PaddingType.setModel(new DefaultComboBoxModel(new String[] {"  EC13", "  CBC"}));
         PaddingType.setSelectedIndex(0);
+    }
+    
+    public static void main(String args[])
+    {
+        new MyFrame1();
     }
 }
