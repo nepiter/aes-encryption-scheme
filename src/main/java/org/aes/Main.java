@@ -1,6 +1,7 @@
 package org.aes;
 
 import org.aes.cipher.Cipher;
+import org.aes.gui.GUIFrame;
 import org.aes.keyMaster.KeyGenerator;
 
 import java.util.Arrays;
@@ -13,6 +14,7 @@ This is the main class.
  */
 public class Main {
     public static void main(String[] args) {
+        GUIFrame guiFrame = new GUIFrame();
         Cipher.Mode encryptionMode = Cipher.Mode.EC13;
         byte[] plainText = "This is a plaintext.".getBytes();
         KeyGenerator keyGenerator = new KeyGenerator(32);
