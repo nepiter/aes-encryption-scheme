@@ -127,8 +127,9 @@ public class GUIFrame extends JFrame {
             {
                 String result_en;
                 try {
-                	System.out.println("Instead we get string from file.txt"); 
-                	result_en = "This sentence be replaced by file return";
+                	getFile a = new getFile();
+                    
+                    String result_en = a.select();
                 	CipherPane.setText(result_en);
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
