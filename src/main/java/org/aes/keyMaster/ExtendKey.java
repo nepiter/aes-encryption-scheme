@@ -3,8 +3,6 @@ package org.aes.keyMaster;
 import com.google.common.primitives.UnsignedBytes;
 import org.aes.cipher.SBox;
 
-import java.math.BigInteger;
-
 /*
 - Implementation of key expansion algorithm
 - Expanded words for key are stored so that it can be accessed during encryption and decryption

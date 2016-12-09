@@ -1,23 +1,19 @@
-/* Class for getting the file
- * 
- * Cryptography Project Fall 2016
- * 
- * This contains a method 'SELECT' that will be used to select the file that we will encrypted using both RAS 
- * as well as AES.
- *  
- * */
+package org.aes.gui;
 
-
-import javax.swing.JFileChooser;
-import javax.swing.LookAndFeel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
+import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException; 
+import java.io.IOException;
 
-public class getFile {
+/* Class for getting the file
+ *
+ * Cryptography Project Fall 2016
+ *
+ * This contains a method 'SELECT' that will be used to select the file that we will encrypted using both RAS
+ * as well as AES.
+ *
+ * */
+public class GetFile {
 	public String select() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException{
 	    //JFileChooser fileChooser = new JFileChooser();
 	    

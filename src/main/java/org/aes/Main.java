@@ -1,10 +1,6 @@
 package org.aes;
 
-import org.aes.cipher.Cipher;
 import org.aes.gui.GUIFrame;
-import org.aes.keyMaster.KeyGenerator;
-
-import java.util.Arrays;
 
 /*
 This is the main class.
@@ -15,22 +11,5 @@ This is the main class.
 public class Main {
     public static void main(String[] args) {
         GUIFrame guiFrame = new GUIFrame();
-        Cipher.Mode encryptionMode = Cipher.Mode.EC13;
-        byte[] plainText = "This is a plaintext.".getBytes();
-        KeyGenerator keyGenerator = new KeyGenerator(32);
-        byte[] key = keyGenerator.getInstance();
-
-        Cipher cipher = new Cipher(plainText, key);
-        cipher.encrypt(encryptionMode);
-        cipher.decrypt(encryptionMode);
-
-        System.out.println("---------------------------------------------------------");
-        System.out.println("Original content: " + new String(plainText));
-        System.out.println("Encrypted content: " + new String(cipher.getEncryptedContent()));
-        System.out.println("Decrypted content: " + new String(cipher.getOutputContentBytes()));
-        System.out.println("---------------------------------------------------------");
-        System.out.println("Original content length: " + plainText.length);
-        System.out.println("Decrypted content length: " + cipher.getOutputContentBytes().length);
-        System.out.println("---------------------------------------------------------");
     }
 }

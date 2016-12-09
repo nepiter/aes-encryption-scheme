@@ -1,8 +1,9 @@
 package org.aes.cipher;
 
-import org.aes.keyMaster.ExtendKey;
 import com.google.common.primitives.UnsignedBytes;
+import org.aes.keyMaster.ExtendKey;
 import org.apache.commons.lang3.RandomStringUtils;
+
 import java.util.Arrays;
 
 /*
@@ -20,10 +21,6 @@ public class Cipher {
     private byte[] outputContentBytes;
     private byte[][] outputContentBlock;
     private byte[] initializationVector = new byte[16];
-
-    public enum Mode {
-        EC13, CBC
-    }
 
     public Cipher(byte[] content, byte[] key) {
         this.key = key;
@@ -86,15 +83,15 @@ public class Cipher {
         return outputContentBytes;
     }
 
-    public void encrypt(Mode encryptionMode) {
+    public void encrypt(String encryptionMode) {
         switch (encryptionMode) {
-            case EC13:
+            case "EC13":
                 for (int i = 0; i < contentBlock.length; i++) {
                     encryptionOfABlock(i, contentBlock[i]);
                 }
                 break;
 
-            case CBC:
+            case "CBC":
                 initializationVector = generateInitializationVector();
                 for (int i = 0; i < contentBlock.length; i++) {
                     if (i == 0) {
@@ -235,16 +232,16 @@ public class Cipher {
         }
     }
 
-    public void decrypt(Mode encryptionMode) {
+    public void decrypt(String encryptionMode) {
         switch (encryptionMode) {
-            case EC13:
+            case "EC13":
                 for (int i = 0; i < encryptedContentBlock.length; i++) {
                     decryptionOfABlock(i, encryptedContentBlock[i]);
                 }
                 removePadding();
                 break;
 
-            case CBC:
+            case "CBC":
                 for (int i = 0; i < encryptedContentBlock.length; i++) {
                     decryptionOfABlock(i, encryptedContentBlock[i]);
                     if (i == 0) {
@@ -370,7 +367,6 @@ public class Cipher {
         int outPutContentLen = outputContentBytes.length;
         int bytesToRemove = Integer.parseInt(UnsignedBytes.toString(outputContentBytes[outPutContentLen-1], 16));
         outputContentBytes = Arrays.copyOfRange(outputContentBytes, 0, outPutContentLen - bytesToRemove);
-        System.out.println(outputContentBytes.length);
     }
 
     private byte[] generateInitializationVector() {
