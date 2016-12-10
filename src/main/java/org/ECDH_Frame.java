@@ -15,11 +15,7 @@ import javax.swing.JSlider;
 public class ECDH_Frame extends JFrame
 {
 
-private int BitChoice=0;
-private int EncryptChoice=0; //0 for AES and 1 for RSA. 
-private int PaddingChoice = 0;
-private String InputString="";
-private String EncryptedString="";
+
 private String Alice_key;
 private String Bob_key;
 private JTextField textField;
@@ -153,6 +149,7 @@ private JTextField textField_5;
         textField_4.setColumns(10);
         
         textField_5 = new JTextField();
+        
         textField_5.setBounds(226, 208, 144, 20);
         decipherPanel.add(textField_5);
         textField_5.setColumns(10);
@@ -163,7 +160,10 @@ private JTextField textField_5;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
        // Call your function after browsing alice key and bob key. Catch the return in String Final_Result;
         		String Final_Result = "I'm Batman";
+        		String Error_msg = "You heard it right!"; //// Catch Error message here!
         		textField_4.setText(Final_Result);
+        		textField_5.setText(Error_msg);   
+///////////////////////////         		
         		
         	}
         });
