@@ -137,8 +137,7 @@ private JTextField textField_5;
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                     } 
-        		
-        	}
+        		        	}
         });
         btnBrowse.setBounds(225, 73, 145, 23);
         decipherPanel.add(btnBrowse);
