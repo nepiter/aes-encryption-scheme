@@ -24,6 +24,7 @@ private JTextField textField_2;
 private JTextField textField_3;
 private JTextField textField_4;
 private JTextField textField_5;
+private JTextField textField_6;
 
     public ECDH_Frame()
     {
@@ -35,7 +36,7 @@ private JTextField textField_5;
        
         
         JPanel plainPanel = new JPanel();
-        plainPanel.setBounds(0, 0, 404, 218);
+        plainPanel.setBounds(0, 0, 404, 164);
         getContentPane().add(plainPanel);
         plainPanel.setLayout(null);
         
@@ -44,11 +45,11 @@ private JTextField textField_5;
         plainPanel.add(lblProvideAPrime);
         
         JLabel lblProvideValueOf = new JLabel("Provide Value of a:");
-        lblProvideValueOf.setBounds(44, 74, 116, 20);
+        lblProvideValueOf.setBounds(45, 83, 116, 20);
         plainPanel.add(lblProvideValueOf);
         
         JLabel lblProvideValueOf_1 = new JLabel("Provide Value of b:");
-        lblProvideValueOf_1.setBounds(45, 118, 128, 14);
+        lblProvideValueOf_1.setBounds(45, 139, 128, 14);
         plainPanel.add(lblProvideValueOf_1);
         
         textField = new JTextField();
@@ -57,33 +58,14 @@ private JTextField textField_5;
         textField.setColumns(10);
        
         textField_1 = new JTextField();
-        textField_1.setBounds(225, 74, 144, 20);
+        textField_1.setBounds(225, 83, 144, 20);
         plainPanel.add(textField_1);
         textField_1.setColumns(10);
         
         textField_2 = new JTextField();
-        textField_2.setBounds(225, 115, 144, 20);
+        textField_2.setBounds(225, 133, 144, 20);
         plainPanel.add(textField_2);
         textField_2.setColumns(10);
-        
-        JButton btnSubmit = new JButton("Submit");
-        btnSubmit.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		int Prime_number = Integer.parseInt(textField.getText());
-        		int a = Integer.parseInt(textField_1.getText());
-        		int b = Integer.parseInt(textField_2.getText());
-   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        		// Call the function here and get the return value back. Catch it in String EC_point or int EC_point;
-        		// If return value is Int, then convert it to String EC_point;
-        		String EC_point = "Everything is awesome";
-        		 textField_3.setText(EC_point);
-        		
-        		
-        		
-        	}
-        });
-        btnSubmit.setBounds(152, 171, 89, 23);
-        plainPanel.add(btnSubmit);
         //Decipher Panel
         JPanel decipherPanel = new JPanel();
         decipherPanel.setBounds(0, 285, 404, 277);
@@ -91,20 +73,20 @@ private JTextField textField_5;
         decipherPanel.setLayout(null);
         
         JLabel lblPrivateKeyFor = new JLabel("Private key for Alice:");
-        lblPrivateKeyFor.setBounds(42, 31, 130, 21);
+        lblPrivateKeyFor.setBounds(45, 31, 130, 21);
         decipherPanel.add(lblPrivateKeyFor);
         
         JLabel lblPrivateKeyFor_1 = new JLabel("Private Key for Bob:");
-        lblPrivateKeyFor_1.setBounds(42, 74, 130, 21);
+        lblPrivateKeyFor_1.setBounds(45, 74, 130, 21);
         decipherPanel.add(lblPrivateKeyFor_1);
         
         JLabel lblResult = new JLabel("Result:");
         lblResult.setVerticalAlignment(SwingConstants.TOP);
-        lblResult.setBounds(42, 159, 46, 14);
+        lblResult.setBounds(45, 159, 46, 14);
         decipherPanel.add(lblResult);
         
         JLabel lblErrorMessage = new JLabel("Error Message:");
-        lblErrorMessage.setBounds(42, 208, 115, 21);
+        lblErrorMessage.setBounds(45, 208, 115, 21);
         decipherPanel.add(lblErrorMessage);
         
                
@@ -158,8 +140,7 @@ private JTextField textField_5;
         	public void actionPerformed(ActionEvent e) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
        // Call your function after browsing alice key and bob key. Catch the return in String Final_Result;
-        		String Final_Result = "I'm Batman";
-        		String Error_msg = "You heard it right!"; //// Catch Error message here!
+        		
         		textField_4.setText(Final_Result);
         		textField_5.setText(Error_msg);   
 ///////////////////////////         		
@@ -169,14 +150,38 @@ private JTextField textField_5;
         button.setBounds(161, 113, 89, 23);
         decipherPanel.add(button);
         
-        JLabel lblTheEcPoint = new JLabel("The EC Point obtained is: ");
-        lblTheEcPoint.setBounds(38, 229, 159, 26);
+        JLabel lblTheEcPoint = new JLabel("X Point :");
+        lblTheEcPoint.setBounds(45, 175, 159, 26);
         getContentPane().add(lblTheEcPoint);
         
         textField_3 = new JTextField();
-        textField_3.setBounds(226, 232, 144, 20);
+        textField_3.setBounds(224, 178, 144, 20);
         getContentPane().add(textField_3);
         textField_3.setColumns(10);
+        
+        JButton btnSubmit = new JButton("Submit");
+        btnSubmit.setBounds(157, 251, 89, 23);
+        getContentPane().add(btnSubmit);
+        
+        JLabel lblNewLabel = new JLabel("Y Point :");
+        lblNewLabel.setBounds(45, 228, 46, 14);
+        getContentPane().add(lblNewLabel);
+        
+        textField_6 = new JTextField();
+        textField_6.setBounds(224, 220, 144, 20);
+        getContentPane().add(textField_6);
+        textField_6.setColumns(10);
+        btnSubmit.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		int Prime_number = Integer.parseInt(textField.getText());
+        		int a = Integer.parseInt(textField_1.getText());
+        		int b = Integer.parseInt(textField_2.getText());
+           		int X_point = Integer.parseInt(textField_3.getText());
+        		int Y_point = Integer.parseInt(textField_6.getText());
+        		 		
+        		
+        	}
+        });
         setVisible(true);
         
         
